@@ -3,7 +3,7 @@ import pandas as pd
 import sys
 import func_estatistica as fe
 
-
+"selecione seu caminho de pasta onde está localizado o modulo func_estatistica"
 sys.path.append(r'C:\Users\gusta\OneDrive\Documentos\GitHub\Projeto Portifólio Olist - V2 Power BI\olist-data-auditing-and-modeling\python')
 
 # olist_order_items_dataset.csv - order_id e order_item_id (PK - composta) price #RangeIndex: 112650
