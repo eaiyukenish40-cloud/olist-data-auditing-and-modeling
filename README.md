@@ -18,8 +18,9 @@ Status Projeto:
 ETL: Processamento e limpeza dos dados.
 - [x] Encontrar por inconsistencia de dados.
 - [ ] Limpeza e tratamento dos erros.
-- [ ] Processamento de dados e joins entre tabelas.
+- [ ] Processamento de dados criação de novas colunas flag para clusters.
 
-
-- [ ] Banco de dados: dados limpos no SQL.
+Banco de dados:
+- [ ] Upload dos dados no SQL.
 - [ ] Modelagem dos dados: definição das PK e FK's.
+- [ ] Joins para análises.
