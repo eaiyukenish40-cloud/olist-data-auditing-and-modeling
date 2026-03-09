@@ -1,0 +1,3 @@
+,order_id,payment_sequential,payment_type,payment_installments,payment_value,flag_parcelamento,flag_inconsistencia_parcelamento
+80856,0016dfedd97fc2950e388d2971d718c7,2,voucher,1,17.92,0,0
+89575,0016dfedd97fc2950e388d2971d718c7,1,credit_card,5,52.63,1,0

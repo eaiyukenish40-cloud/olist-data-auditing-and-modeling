@@ -4,7 +4,10 @@ import pandas as pd
 from unidecode import unidecode
 import sys
 import func_estatistica as fe
+import class_elt as elt
 import numpy
+import matplotlib.pyplot as plt
+
 
 "selecione seu caminho de pasta onde está localizado o modulo func_estatistica"
 sys.path.append(r'C:\Users\gusta\OneDrive\Documentos\GitHub\Projeto Portifólio Olist - V2 Power BI\olist-data-auditing-and-modeling\python')
@@ -117,6 +120,106 @@ payments = pd.read_csv('../Olist/olist_order_payments_dataset.csv',sep=',')
 payments['payment_installments'].value_counts()
 payments[(payments['payment_installments'] == 0)]
 
+
+
+payments['flag_parcelamento'] = numpy.where(payments['payment_installments'] > 1,1,0)
+payments['flag_inconsistencia_parcelamento'] = numpy.where(payments['payment_installments'] == 0,1,0)
+
+
+'Análise dos dados orders repetidas. Onde foi possível concluir que são casos de pedidos com mais de um tipo de pagamento.'
+
+contagem_id = payments.groupby('order_id').agg({'order_id':'count'})
+contagem_id.columns = ['order_id_count']
+contagem_id = contagem_id.reset_index()
+lista_id_repetidos = contagem_id[(contagem_id['order_id_count'] > 1)]['order_id'].to_list()
+
+
+'calcular o forecast de receita mensal considerando a data do pedido e o valor pago'
+
+'junção com a tabela orders para obter as informações de datas'
+forecast_mensal = payments.merge(right= orders[['order_id','customer_id','order_status','order_delivered_customer_date','order_purchase_timestamp','flag_integridade','flg_atraso']], how='left', on='order_id', suffixes=['_payments','_orders'])
+
+colunas_analisadas = ['order_id','payment_type','payment_installments','parcelas','mes_offset','flag_parcelamento','flag_inconsistencia_parcelamento' ,'order_status','order_delivered_customer_date','order_purchase_timestamp','flag_integridade','flg_atraso']
+
+
+
+'inicio do cálculo de forecast mensal'
+forecast_mensal['parcelas'] = forecast_mensal['payment_value'].div(forecast_mensal['payment_installments']).replace([numpy.inf, -numpy.inf], 0)
+
+forecast_mensal['mes_offset'] = forecast_mensal['payment_installments'].apply(lambda x: list(range(0,x)) if x >= 1 else [0])
+
+forecast_mensal_explodida = forecast_mensal.explode('mes_offset')
+forecast_mensal_explodida = forecast_mensal_explodida[colunas_analisadas]
+
+forecast_mensal_explodida['data_prevista_pagamento'] = forecast_mensal_explodida.apply(lambda x: x['order_purchase_timestamp'] + pd.DateOffset(months=x['mes_offset']), axis=1)
+
+forecast_mensal_explodida[(forecast_mensal_explodida['flag_integridade'] == 0)]
+
 # %%
 
-payments['flag_parcelamento'] = numpy.where(payments['payment_installments'] == 0,1,0)
+# ROWS: 99441 - customer_id (pk)/ 96096: customer_unique_id
+
+"criacao das funções de leitura e limpeza de dados essa funções irão evoluir para uma classe de ETL para ser reaproveitada em outros projetos e facilitar o acesso aos atributos"
+
+'''def leitura_dados_csv():
+    path = input(r'Digite o caminho que será analisado: ').strip()
+    tabela_analidada = input('Digite o arquivo csv que será analisado: ')
+    coluna_analisada = input('Digite as colunas que deseja analisar: ')
+    acesso = f'{path}\{tabela_analidada}.csv'
+    return acesso,coluna_analisada
+retorno = leitura_dados_csv()
+leitura = {'caminho':retorno[0], 'coluna':retorno[1]}
+
+def limpeza_dados(coluna_df: pd.Series):
+
+    coluna_limpa = coluna_df.str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8').str.lower()
+    coluna_limpa = coluna_limpa.str.split(r'[/,\-]',n=1).str[0]
+    coluna_limpa = coluna_limpa.str.replace(r"'", ' ', regex=True)
+    coluna_limpa = coluna_limpa.str.strip()
+    coluna_limpa = numpy.where(coluna_limpa.str.contains('@',na=False), 'desconhecido', coluna_limpa)
+    correcoes = (coluna_df != coluna_limpa).sum()
+    return coluna_limpa, correcoes
+
+customers = pd.read_csv(leitura['caminho'],sep=',')'''
+
+# %%
+
+path = r'C:\Users\gusta\Documents\GitHub\Olist\olist-data-auditing-and-modeling\Olist'
+tabela = 'olist_customers_dataset'
+coluna = input('Digite as colunas que deseja analisar: ').strip()
+
+customers_2_inst = elt.ETL(path, tabela, coluna)
+customers_2 = customers_2_inst.leitura_dados_csv()
+coluna_limpa_customers = customers_2_inst.limpeza_dados(customers_2[coluna])
+
+
+
+"limpeza de acentos e padronização para caixa baixa da coluna analisada"
+#  %%
+'utilizando a biblioteca unidecode para remover acentos e caracteres especiais e função temporária lambda para aplicar a limpeza em cada valor da coluna'
+
+'''coluna_limpa = customers[leitura['coluna']].apply(lambda x : unidecode(str(x)).lower() if pd.notnull(x) else x)
+# ou
+'uso do str para a limpeza vetorizada.'
+coluna_limpa = customers[leitura['coluna']].str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8').str.lower()
+coluna_limpa = coluna_limpa.str.split(r'[/,\-]',n=1).str[0]
+coluna_limpa = coluna_limpa.str.replace(r"'", ' ', regex=True)
+coluna_limpa = coluna_limpa.str.strip()
+coluna_limpa = numpy.where(coluna_limpa.str.contains('@',na=False), 'desconhecido', coluna_limpa)
+
+correcoes = (customers[leitura['coluna']] != coluna_limpa).sum()'''
+
+
+
+# %%
+
+
+vendedores_inst = elt.ETL(path, 'olist_sellers_dataset', 'seller_city')
+vendedores = vendedores_inst.leitura_dados_csv()
+coluna_limpa_vendedores = vendedores_inst.limpeza_dados(vendedores['seller_city'])
+
+# %%
+
+
+
+# %%
