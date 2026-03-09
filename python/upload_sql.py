@@ -11,7 +11,7 @@ engine = create_engine(db_connection)
 
 # %%
 try:
-    path = r'C:\Users\gusta\Documents\GitHub\Olist\olist-data-auditing-and-modeling\python\data_cleaning_results'
+    path = input('digite o caminho da pasta onde estão os arquivos CSV: ').strip()
     arquivos_csv = glob.glob(f'{path}/*.csv')
 except Exception as e:
     print(f'Erro ao acessar os arquivos CSV: {e}')
