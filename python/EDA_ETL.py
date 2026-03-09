@@ -49,11 +49,11 @@ order_items = pd.read_csv('../Olist/olist_order_items_dataset.csv',sep=',')
 
 order_items['valor pago'] = order_items['price'] + order_items['freight_value']
 
-# %%
+
 filtro_frete_gratis = order_items['freight_value'] == 0
 order_items['flag_frete_gratis'] = numpy.where(filtro_frete_gratis,1,0)
 
-# %%
+
 "flags outliers preco e frete" # removido da versão final não faz sentido do ponto de vista de negócio
 outlier_preco_max = fe.estatisticas(order_items['price'])['outlier_max']
 outlier_preco_min = fe.estatisticas(order_items['price'])['outlier_min']
@@ -65,14 +65,14 @@ order_items['flag_outlier_preco_min'] = numpy.where(order_items['price'] < outli
 order_items['flag_outlier_frete_max'] = numpy.where(order_items['freight_value'] > outlier_frete_max, 1, 0)
 order_items['flag_outlier_frete_min'] = numpy.where(order_items['freight_value'] < outlier_frete_min, 1, 0)
 
-# %%
+
 
 "categorizacao ticket dos produtos"
 rotulos_ticket = ['Ticket Baixo', 'Ticket Médio', 'Ticket Alto', 'Ticket Premium']
 "classificacao com base nos quartis de preco"
 order_items['categoria_preco'] = pd.qcut(order_items['price'], q=4,labels = rotulos_ticket)
 
-# %%
+
 'flag outliers proporcao preço e frete'
 order_items['peso_frete_no_preco'] = order_items['freight_value'].div(order_items['price']).replace([numpy.inf, -numpy.inf], 0)
 
@@ -101,7 +101,7 @@ rotulos_atraso = ['rapido','normal','demorado','problemas']
 order_reviews['classificacao_tempo_reposta'] =  pd.cut(order_reviews['tempo_resposta'],bins=[-1, 1, 3, 5, 9999] , labels=rotulos_atraso)
 
 
-'revela a tendencia de comentários nulos por classificação de nota'
+'revela a tendencia de comentários nulos por classificação de nota' # não enviei ao mysql
 qtde_por_notas = order_reviews.groupby('review_score').agg({
     'review_id':'count',
     'review_comment_message':'count'}).reset_index()
@@ -144,7 +144,7 @@ colunas_analisadas = ['order_id','payment_type','payment_installments','parcelas
 
 
 'inicio do cálculo de forecast mensal'
-forecast_mensal['parcelas'] = forecast_mensal['payment_value'].div(forecast_mensal['payment_installments']).replace([numpy.inf, -numpy.inf], 0)
+forecast_mensal['parcelas'] = forecast_mensal['payment_value'].div(forecast_mensal['payment_installments']).replace([numpy.inf, -numpy.inf], 0) # tabela intermediaria não enviada ao mysql
 
 forecast_mensal['mes_offset'] = forecast_mensal['payment_installments'].apply(lambda x: list(range(0,x)) if x >= 1 else [0])
 
@@ -153,6 +153,7 @@ forecast_mensal_explodida = forecast_mensal_explodida[colunas_analisadas]
 
 forecast_mensal_explodida['data_prevista_pagamento'] = forecast_mensal_explodida.apply(lambda x: x['order_purchase_timestamp'] + pd.DateOffset(months=x['mes_offset']), axis=1)
 
+#tabela a ser enviada ao mysql
 forecast_mensal_explodida[(forecast_mensal_explodida['flag_integridade'] == 0)]
 
 # %%
@@ -191,6 +192,7 @@ coluna = input('Digite as colunas que deseja analisar: ').strip()
 customers_2_inst = elt.ETL(path, tabela, coluna)
 customers_2 = customers_2_inst.leitura_dados_csv()
 coluna_limpa_customers = customers_2_inst.limpeza_dados(customers_2[coluna])
+customers_2[coluna] = coluna_limpa_customers
 
 
 
@@ -217,9 +219,33 @@ correcoes = (customers[leitura['coluna']] != coluna_limpa).sum()'''
 vendedores_inst = elt.ETL(path, 'olist_sellers_dataset', 'seller_city')
 vendedores = vendedores_inst.leitura_dados_csv()
 coluna_limpa_vendedores = vendedores_inst.limpeza_dados(vendedores['seller_city'])
+vendedores['seller_city'] = coluna_limpa_vendedores
 
 # %%
 
+produtos_inst = elt.ETL(path, 'olist_products_dataset', 'product_category_name')
+produtos = produtos_inst.leitura_dados_csv()
+coluna_limpa_produtos = produtos_inst.limpeza_dados(produtos['product_category_name'])
+produtos['product_category_name'] = coluna_limpa_produtos
 
+# %%
+
+geolocation_inst = elt.ETL(path, 'olist_geolocation_dataset', 'geolocation_city')
+geolocation =geolocation_inst.leitura_dados_csv()
+coluna_limpa_geolocation = geolocation_inst.limpeza_dados(geolocation_inst.leitura_dados_csv()['geolocation_city'])
+
+geolocation['geolocation_city'] = coluna_limpa_geolocation
+# %%
+'exportando tabelas limpas para csv'
+
+orders.to_csv('data_cleaning_results/orders_limpa.csv', index=False)
+order_items.to_csv('data_cleaning_results/order_items_limpa.csv', index=False)
+order_reviews.to_csv('data_cleaning_results/order_reviews_limpa.csv', index=False)
+payments.to_csv('data_cleaning_results/payments_limpa.csv', index=False)
+forecast_mensal_explodida.to_csv('data_cleaning_results/forecast_mensal_explodida_limpa.csv', index=False)
+customers_2.to_csv('data_cleaning_results/customers_2_limpa.csv', index=False)
+vendedores.to_csv('data_cleaning_results/vendedores_limpa.csv', index=False)
+produtos.to_csv('data_cleaning_results/produtos_limpa.csv', index=False)
+geolocation.to_csv('data_cleaning_results/geolocation_limpa.csv', index=False)
 
 # %%
