@@ -2,7 +2,9 @@ import pandas as pd
 import numpy
 import unidecode
 
+
 class ETL:
+    '''Classe para realizar o processo de Extração, Transformação e Carga (ETL) dos dados'''
     def __init__(self, path: str, tabela: str, coluna: str):
         self.path = path
         self.tabela = tabela

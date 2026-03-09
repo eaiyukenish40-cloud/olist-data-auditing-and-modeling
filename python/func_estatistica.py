@@ -1,6 +1,8 @@
 import pandas as pd
 
 def estatisticas(coluna:pd.Series):
+    '''
+    Função para calcular as estatísticas descritivas de uma coluna numérica, incluindo a média, desvio padrão, mínimo, máximo, quartis, MAD, CV e limites para detecção de outliers.'''
     estatistica_coluna = coluna.describe()
 
     MAD = (coluna - estatistica_coluna.loc['mean']).abs().mean()
