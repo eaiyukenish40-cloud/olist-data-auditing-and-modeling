@@ -47,7 +47,7 @@ orders['flag_integridade'] = numpy.where(filtro_integridade_orders,1,0)
 
 order_items = pd.read_csv('../Olist/olist_order_items_dataset.csv',sep=',')
 
-order_items['valor pago'] = order_items['price'] + order_items['freight_value']
+order_items['valor_pago'] = order_items['price'] + order_items['freight_value']
 
 
 filtro_frete_gratis = order_items['freight_value'] == 0
@@ -68,6 +68,7 @@ order_items['flag_outlier_frete_min'] = numpy.where(order_items['freight_value']
 
 
 "categorizacao ticket dos produtos"
+#categorias definidas com base nos quartis de preço, onde cada categoria representa um intervalo de preço diferente, permitindo uma análise mais segmentada dos produtos com base em seu valor. Essa abordagem é útil para identificar padrões de compra e comportamento do cliente em relação a diferentes faixas de preço.
 rotulos_ticket = ['Ticket Baixo', 'Ticket Médio', 'Ticket Alto', 'Ticket Premium']
 "classificacao com base nos quartis de preco"
 order_items['categoria_preco'] = pd.qcut(order_items['price'], q=4,labels = rotulos_ticket)
@@ -79,6 +80,7 @@ order_items['peso_frete_no_preco'] = order_items['freight_value'].div(order_item
 outlier_proporcao_max = fe.estatisticas(order_items['peso_frete_no_preco'])['outlier_max']
 
 
+# regras de negócio para identificar fretes abusivos, onde o valor do frete é maior ou igual a 50% do valor do produto ou quando a proporção entre frete e preço é maior que o outlier máximo identificado.
 order_items['flag_outlier_proporcao_max'] = numpy.where(order_items['peso_frete_no_preco'] > outlier_proporcao_max,1,0)
 
 order_items['flag_frete_abusivo'] = numpy.where(order_items['peso_frete_no_preco'] >= 0.50, 1, 0)
@@ -247,5 +249,6 @@ customers_2.to_csv('data_cleaning_results/customers_2_limpa.csv', index=False)
 vendedores.to_csv('data_cleaning_results/vendedores_limpa.csv', index=False)
 produtos.to_csv('data_cleaning_results/produtos_limpa.csv', index=False)
 geolocation.to_csv('data_cleaning_results/geolocation_limpa.csv', index=False)
+
 
 # %%
