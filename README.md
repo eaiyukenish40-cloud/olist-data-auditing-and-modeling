@@ -47,6 +47,11 @@ Banco de dados:
 - [x] Levantamento de perguntas de negócio.
 - [ ] Joins para análises.
 
+Tabelas:
+- [x] Order_itens e orders. Verificado a inconsistencia de qtde de order_id com a tabela payments.
+- [x] Verificado o status das orders referente a order_id existentes apenas na tabela payments. O status apresentado são de itens cancelados e indisponíveis
+- [x] Verificado a diferença de valores entre order_items e payments devido aos order_id existentes na payments.
+- [ ] Construir o join da tabela payments e realizar os filtros necessários estudados para a view final que será utilizada.
 
 Levantamento de hipóteses:
 Hipótese 1: A "Taxa de Queima" Logística
