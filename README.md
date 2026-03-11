@@ -43,7 +43,7 @@ ETL: Processamento e limpeza dos dados.
 
 Banco de dados:
 - [x] Upload dos dados no SQL.
-- [ ] Modelagem dos dados: definição das PK e FK's.
+- [x] Modelagem dos dados: definição das PK e FK's.
 - [x] Levantamento de perguntas de negócio.
 - [ ] Joins para análises.
 
