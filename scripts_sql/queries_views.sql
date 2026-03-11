@@ -13,18 +13,48 @@ use olist_v2;
 
 DESCRIBE orders_limpa;
 -- colunas de fora: tabela order itens: shipping_limit_date; tabela orders: order_id	customer_id
-select*from order_items_limpa limit 5; 
+select count(*)from order_items_limpa limit 5; 
 -- este join permite responder cap 1 pergunta 1,2. cap 2 perguntas 1,2,3
+
 SELECT
-	
 -- colunas tb order_items_limpa
-	order_item_id, product_id, seller_id, shipping_limit_date, price, freight_value, valor_pago, flag_frete_gratis, flag_outlier_preco_max, flag_outlier_preco_min, flag_outlier_frete_max, flag_outlier_frete_min,
+	order_items.order_id, order_item_id, product_id, seller_id, shipping_limit_date, price, freight_value, valor_pago, flag_frete_gratis, flag_outlier_preco_max, flag_outlier_preco_min, flag_outlier_frete_max, flag_outlier_frete_min,
 	categoria_preco, peso_frete_no_preco, flag_outlier_proporcao_max, flag_frete_abusivo, categoria_frete,
 -- colunas tb orders_limpa
 	customer_id, order_status, order_purchase_timestamp, order_approved_at, order_delivered_carrier_date, order_delivered_customer_date, order_estimated_delivery_date, dias_para_entrega, tempo_aprovacao_pedido,
 	tempo_coleta_item, antecedencia_entrega, flg_atraso, flag_integridade
+-- sum(valor_pago) as total_pago
 FROM order_items_limpa as order_items
-LEFT JOIN orders_limpa as orders ON order_items.order_id = orders.order_id;
+LEFT JOIN orders_limpa as orders ON order_items.order_id = orders.order_id
+-- WHERE order_status not in ('canceled','unavailable')
+
+;
+
+-- --------------------------------
+-- Verificando pra tabelas pagamentos
+
+WITH orders_itens_inexistente AS(
+	SELECT 
+		tb2.order_id,
+		tb2.order_status
+	FROM order_items_limpa tb1
+	RIGHT JOIN orders_limpa tb2 ON tb1.order_id = tb2.order_id
+	WHERE tb1.order_id is null
+),
+id_inexistentes AS (
+	SELECT 
+		order_id,order_status,
+        CASE 	
+			WHEN order_status in ('invoiced', 'shipped') THEN 'Inconsistencia_origem'
+            WHEN order_status IN ('canceled','unavailable') THEN 'Estorno/Reembolso'
+            ELSE 'Acompanhar'
+		END as status_id_inexistentes
+	FROM orders_itens_inexistente
+)
+
+-- em andamento o código
+
+
 -- --------------------------------
 
 -- conferindo o tamanho das tabelas com order_id
@@ -78,27 +108,53 @@ WHERE  flg_atraso = 1;
 -- Encontrar os itens que não há intersecção entre order_itens e orders: 775 order_id
 
 SELECT 
-		*
+	*
 FROM order_items_limpa tb1
 RIGHT JOIN orders_limpa tb2 ON tb1.order_id = tb2.order_id
 WHERE tb1.order_id is null
 ORDER BY order_approved_at DESC;
 
+
+SELECT 
+	tb2.order_status,
+	COUNT(tb2.order_status) as qtde_status
+FROM order_items_limpa tb1
+RIGHT JOIN orders_limpa tb2 ON tb1.order_id = tb2.order_id
+WHERE tb1.order_id is null
+GROUP BY tb2.order_status;
+
 -- Encontrar as informações onde as order_id que não existem na tb order_itens, existem na tabela pagamentos.
 WITH orders_itens_inexistente AS(
 	SELECT 
 		tb2.order_id,
-		tb2.order_status,
-		COUNT(tb2.order_status) as qtde_status
+		tb2.order_status
 	FROM order_items_limpa tb1
 	RIGHT JOIN orders_limpa tb2 ON tb1.order_id = tb2.order_id
 	WHERE tb1.order_id is null
-	GROUP BY tb2.order_status
+),
+resumo_pagamento_orders_inexistentes AS(
+	SELECT 
+		order_status,
+		count(order_status) as qtde_tipo,
+		sum(payment_value) as soma_pagamento
+	FROM payments_limpa tb1
+	JOIN orders_itens_inexistente tb2 ON tb2.order_id = tb1.order_id
+	GROUP BY tb2.order_id
 )
-SELECT *
-FROM payments_limpa tb1
-JOIN orders_itens_inexistente tb2 ON tb2.order_id = tb1.order_id;
 
+-- Valor da tabela pagamentos R$ 162.591,95 de itens que não existem na ordem item que são (indisponível,cancelado = 161.676)
+SELECT 
+	order_status,
+	COUNT(qtde_tipo) AS qtde_tipo,
+    SUM(soma_pagamento) as soma_pagamento
+FROM resumo_pagamento_orders_inexistentes
+group by order_status
+;
 
+-- descontando o valor encontrado do valor da tabela do pagamento, chegamos no valor próximo do order_items. 
+SELECT SUM(payment_value)
+FROM payments_limpa;
 
-
+SELECT
+SUM(valor_pago)
+FROM order_items_limpa;
