@@ -32,6 +32,10 @@ modify column order_purchase_timestamp datetime,
 modify column flag_integridade tinyint,
 modify column flg_atraso tinyint,
 modify column data_prevista_pagamento DATETIME;
+
+ALTER TABLE forecast_mensal_explodida_limpa
+ADD foreign key (order_id) references orders_limpa(order_id);
+
 -- -------------------------------------------
 describe geolocation_limpa;
 SELECT*FROM geolocation_limpa LIMIT 5;
