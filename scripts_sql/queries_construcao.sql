@@ -8,7 +8,9 @@ use olist_v2;
 -- order_reviews_limpa
 -- payments_limpa
 -- produtos_limpa
--- vendedores_limpa
+-- vencustomersdedores_limpa
+
+DROP DATABASE olist_v2;
 
 -- 1. responde a pergunta 3 do capítulo 1
 describe forecast_mensal_explodida_limpa;
