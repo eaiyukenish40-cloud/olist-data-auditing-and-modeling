@@ -277,3 +277,23 @@ SELECT
 SUM(valor_pago)
 FROM order_items_limpa;
 -- --------------------------------
+
+-- 7. criando a tabela dimensão geolocalização
+SELECT 
+	DISTINCT geolocation_zip_code_prefix,
+    geolocation_city,geolocation_state,    
+	CASE 
+		WHEN geolocation_state in ('AC','AP','AM','PA','RO','RR','TO') THEN 'Norte'
+		WHEN geolocation_state in ('AL','BA','CE','MA','PB','PE','PI','RN','SE') THEN 'Nordeste'
+		WHEN geolocation_state in ('DF','GO','MT','MS') THEN 'Centro-Oeste'
+		WHEN geolocation_state in ('ES','MG','RJ','SP') THEN 'Sudeste'
+		WHEN geolocation_state in ('PR','SC','RS') THEN 'Sul'
+	END as regiões
+FROM geolocation_limpa;
+
+SELECT 
+	COUNT(DISTINCT geolocation_zip_code_prefix)
+FROM geolocation_limpa;
+-- 19015
+
+

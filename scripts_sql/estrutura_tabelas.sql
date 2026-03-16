@@ -22,7 +22,7 @@ ALTER TABLE forecast_mensal_explodida_limpa
 modify column order_id VARCHAR(32),
 modify column payment_type VARCHAR(25),
 modify column payment_installments tinyint,
-modify column parcelas smallint,
+modify column parcelas float,
 modify column mes_offset tinyint,
 modify column flag_parcelamento tinyint,
 modify column flag_inconsistencia_parcelamento tinyint,
