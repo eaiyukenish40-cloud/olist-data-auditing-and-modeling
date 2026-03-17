@@ -2,35 +2,35 @@
 Desenvolvimento da versão aprimorada do portifólio da Olist, trabalhado em dezembro.
 
 Perguntas de negócio:
--  Qual é a taxa de quebra de SLA (Service Level Agreement) de entrega e como o atraso logístico está impactando diretamente a retenção de receita?
--  Qual é a nossa penetração e margem de lucro por região? O custo do frete (freight_value) está canibalizando vendas no Norte/Nordeste?
--  Quais são os projetos/categorias com mais vendas?
--  Como foi a performance das categorias nos últimos 6 meses
--  Como está o nosso ticket médio?
--  Qual a satisfação dos nossos clientes?
--  Temos muitos atrasos nas entregas?
--  Como está a concentração de risco no nosso ecossistema? (ex: 80% da nossa receita depende de apenas 5% dos sellers?). Quem são os sellers tóxicos (alto volume, mas com péssimos reviews que destroem a marca)?
--  Qual a projeção de fluxo de caixa baseada no perfil de parcelamento (payment_installments) vs. pagamentos à vista (payment_type)?
+- [x] Qual é a taxa de quebra de SLA (Service Level Agreement) de entrega e como o atraso logístico está impactando diretamente a retenção de receita?
+- [ ] Qual é a nossa penetração e margem de lucro por região? O custo do frete (freight_value) está canibalizando vendas no Norte/Nordeste?
+- [ ] Quais são os projetos/categorias com mais vendas?
+- [ ] Como foi a performance das categorias nos últimos 6 meses
+- [ ] Como está o nosso ticket médio?
+- [ ] Qual a satisfação dos nossos clientes?
+- [ ] Temos muitos atrasos nas entregas?
+- [ ] Como está a concentração de risco no nosso ecossistema? (ex: 80% da nossa receita depende de apenas 5% dos sellers?). Quem são os sellers tóxicos (alto volume, mas com péssimos reviews que destroem a marca)?
+- [ ] Qual a projeção de fluxo de caixa baseada no perfil de parcelamento (payment_installments) vs. pagamentos à vista (payment_type)?
 
 Capítulo 1: A Saúde Financeira (A Visão Macro):
-- Pergunta: Como evoluiu a Receita Bruta Total (GMV - Gross Merchandise Volume) ao longo dos 3 anos? Tivemos sazonalidade (ex: Black Friday)?
-- Pergunta: O Ticket Médio (Produto + Frete) aumentou ou diminuiu? Os clientes estão comprando mais itens por pedido ou itens mais caros?
-- Pergunta: Qual é a nossa exposição no fluxo de caixa? (Seu forecast de parcelamentos entra aqui como a "cereja do bolo").
+- [ ] Pergunta: Como evoluiu a Receita Bruta Total (GMV - Gross Merchandise Volume) ao longo dos 3 anos? Tivemos sazonalidade (ex: Black Friday)?
+- [ ] Pergunta: O Ticket Médio (Produto + Frete) aumentou ou diminuiu? Os clientes estão comprando mais itens por pedido ou itens mais caros?
+- [ ] Pergunta: Qual é a nossa exposição no fluxo de caixa? (Seu forecast de parcelamentos entra aqui como a "cereja do bolo").
 
 Capítulo 2: A Eficiência Operacional (O Motor Logístico):
-- Pergunta: Qual a diferença entre a "Promessa" (order_estimated_delivery_date) e a "Realidade" (order_delivered_customer_date)?
-- Pergunta: Onde está o gargalo da operação? É o seller demorando para despachar para a transportadora (order_delivered_carrier_date), ou a transportadora demorando para entregar ao cliente?
-- Pergunta: O custo do frete médio (freight_value) versus o valor do produto (price) é sustentável? (Ex: Pagar R$ 50 de frete num produto de R$ 30 inviabiliza o negócio).
+- [ ] Pergunta: Qual a diferença entre a "Promessa" (order_estimated_delivery_date) e a "Realidade" (order_delivered_customer_date)?
+- [ ] Pergunta: Onde está o gargalo da operação? É o seller demorando para despachar para a transportadora (order_delivered_carrier_date), ou a transportadora demorando para entregar ao cliente?
+- [ ] Pergunta: O custo do frete médio (freight_value) versus o valor do produto (price) é sustentável? (Ex: Pagar R$ 50 de frete num produto de R$ 30 inviabiliza o negócio).
 
 Capítulo 3: A Qualidade do Ecossistema (Sellers & Categorias)
 Não vendemos os produtos, nós intermediamos. Os parceiros são bons?
-- Pergunta: Curva ABC de Sellers: Quantos sellers representam o maior volume de faturamento e quais categorias eles dominam?
-- Pergunta: Qual é a taxa de rejeição das categorias? (Ex: Vender eletrônicos traz muita receita, mas tem o maior número de devoluções/reviews ruins?).
+- [ ] Pergunta: Curva ABC de Sellers: Quantos sellers representam o maior volume de faturamento e quais categorias eles dominam?
+- [ ] Pergunta: Qual é a taxa de rejeição das categorias? (Ex: Vender eletrônicos traz muita receita, mas tem o maior número de devoluções/reviews ruins?).
 
 Capítulo 4: O Termômetro da Marca (Satisfação do Cliente)
 O impacto do processo na percepção do usuário.
-- Pergunta: Como o Review Score médio flutuou ao longo dos 3 anos?
-- Pergunta (A Mais Matadora): Qual é a correlação exata entre Atraso na Entrega e Reviews Nota 1?
+- [ ] Pergunta: Como o Review Score médio flutuou ao longo dos 3 anos?
+- [ ] Pergunta (A Mais Matadora): Qual é a correlação exata entre Atraso na Entrega e Reviews Nota 1?
 
 Status Projeto:
 - [x] EDA: Análise exploratória dos dados. Entendimento dos campos, análises estatísticas e distribuição dos dados.
