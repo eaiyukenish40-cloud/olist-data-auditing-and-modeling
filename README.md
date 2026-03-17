@@ -4,8 +4,8 @@ Desenvolvimento da versão aprimorada do portifólio da Olist, trabalhado em dez
 Perguntas de negócio:
 - [x] Qual é a taxa de quebra de SLA (Service Level Agreement) de entrega e como o atraso logístico está impactando diretamente a retenção de receita?
 - [x] Qual é a nossa penetração por região? O custo do frete (freight_value) está canibalizando vendas no Norte/Nordeste? Frete Ratio?
-- [ ] Quais são os projetos/categorias com mais vendas?
-- [ ] Como foi a performance das categorias nos últimos 6 meses
+- [x] Quais são os categorias com mais vendas?
+- [x] Como foi a performance das categorias nos últimos 6 meses
 - [ ] Como está o nosso ticket médio?
 - [ ] Qual a satisfação dos nossos clientes?
 - [ ] Temos muitos atrasos nas entregas?
